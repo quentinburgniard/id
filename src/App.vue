@@ -8,10 +8,10 @@
   }
 
   watch(token, async (newToken) => {
-    document.cookie = 'token=' + newToken + ';samesite=strict;secure'; // ;domain=digitalleman.com
-    localStorage.setItem('token', newToken);
-    let redirect = new URLSearchParams(document.location.search).get('redirect');
-    if (redirect) window.location.replace(redirect);
+    document.cookie = 't=' + newToken + ';domain=' + location.hostname.match(/[^.]+[.][^.]+$/)[0] + ';samesite=strict;secure';
+    localStorage.setItem('t', newToken);
+    let redirect = new URLSearchParams(document.location.search).get('r');
+    if (redirect) window.location.replace(redirect + '?t=' + newToken);
   })
 </script>
 

@@ -7,7 +7,7 @@
 
   function login() {
     if (email.value && password.value) {
-      fetch('https://api-v2.digitalleman.com/api/auth/local', {
+      fetch('https://api.digitalleman.com/v2/auth/local', {
         body: JSON.stringify({
           identifier: email.value,
           password: password.value

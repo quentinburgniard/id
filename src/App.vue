@@ -10,7 +10,7 @@
   watch(token, async (newToken) => {
     document.cookie = 't=' + newToken + ';domain=' + location.hostname.match(/[^.]+[.][^.]+$/)[0] + ';samesite=strict;secure';
     let redirect = new URLSearchParams(document.location.search).get('r');
-    if (redirect && !redirect.includes('digitalleman.com')) window.location.replace(redirect + '?t=' + newToken);
+    if (redirect && !redirect.includes('digitalleman.com')) window.location.replace('https://' + redirect + '?t=' + newToken);
   })
 </script>
 

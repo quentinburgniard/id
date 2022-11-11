@@ -8,9 +8,13 @@
   }
 
   watch(token, async (newToken) => {
-    document.cookie = 't=' + newToken + ';domain=' + location.hostname.match(/[^.]+[.][^.]+$/)[0] + ';samesite=strict;secure';
+    document.cookie = 't=' + newToken + ';domain=digitalleman.com;samesite=strict;secure';
     let redirect = new URLSearchParams(document.location.search).get('r');
-    if (redirect && !redirect.includes('digitalleman.com')) window.location.replace('https://' + redirect + '?t=' + newToken);
+    if (redirect) {
+      redirect = 'https://' + redirect;
+      if (!redirect.includes('digitalleman.com')) redirect += '?t=' + newToken;
+      window.location.replace(redirect);
+    }
   })
 </script>
 

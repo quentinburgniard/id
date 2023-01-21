@@ -3,14 +3,12 @@
   const emit = defineEmits();
   let email = ref('');
   let validated = ref(false);
-  let password = ref('');
 
-  function login() {
+  function reset() {
     if (email.value && password.value) {
-      fetch('https://api.digitalleman.com/v2/auth/local', {
+      fetch('https://api.digitalleman.com/v2/auth/forgot-password', {
         body: JSON.stringify({
-          identifier: email.value,
-          password: password.value
+          email: email.value
         }),
         headers: {
           'content-type': 'application/json'
@@ -19,7 +17,7 @@
       })
       .then((response) => response.json())
       .then((data) => {
-        if (data.jwt) emit('login', data.jwt);
+        //if (data.jwt) emit('login', data.jwt);
       });   
     } else {
       validated.value = true;
@@ -32,8 +30,7 @@
     <div class="row">
       <div class="container">
         <div class="col-lg-4 offset-lg-4">
-          <h2>Sign In</h2>
-          <form class="needs-validation" :class="{ 'was-validated': validated }" novalidate @submit.prevent="login">
+          <form class="needs-validation" :class="{ 'was-validated': validated }" novalidate @submit.prevent="reset">
             <div class="mt-3">
               <input class="form-control" id="email" placeholder="Email" required type="email" v-model.lazy="email">
               <div class="invalid-feedback">
@@ -47,7 +44,13 @@
               </div>
             </div>
             <div class="mt-3">
-              <button class="btn btn-primary">Sign In</button>
+              <input class="form-control" id="passwordConfirmation" placeholder="Password Confirmation" required type="password" v-model.lazy="passwordConfirmation">
+              <div class="invalid-feedback">
+                Password confirmation is required.
+              </div>
+            </div>
+            <div class="mt-3">
+              <button class="btn btn-primary">Reset Password</button>
             </div>
           </form>
         </div>

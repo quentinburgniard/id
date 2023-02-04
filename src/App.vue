@@ -1,6 +1,6 @@
 <script setup>
   import { ref, watch } from 'vue';
-  import Login from './components/Login.vue'
+  import Login from './components/Login.vue';
   let token = ref(getToken());
 
   function getToken () {

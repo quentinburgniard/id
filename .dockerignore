@@ -2,3 +2,9 @@
 .vscode
 dist
 node_modules
+.dockerignore
+.git
+.gitignore
+Dockerfile
+LICENSE
+README.md

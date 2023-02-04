@@ -17,7 +17,7 @@
   }
 
   watch(token, async (newToken) => {
-    document.cookie = 't=' + newToken + ';domain=digitalleman.com;samesite=strict;secure';
+    document.cookie = 't=' + newToken + ';domain=digitalleman.com;max-age=604740;samesite=strict;secure';
     let redirect = new URLSearchParams(document.location.search).get('r');
     if (redirect) {
       redirect = 'https://' + redirect;

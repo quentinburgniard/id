@@ -7,23 +7,30 @@
     let token = '';
     document.cookie.split('; ').forEach(cookie => {
       let match = cookie.match(/^t=(.+)$/);
-      if (match && match[1]) token = match[1];
+      if (match && match[1]) {
+        redirect();
+        token = match[1];
+      }
     });
     return token;
   }
 
-  function login (jwt) {
+  function login(jwt) {
     token.value = jwt;
   }
 
-  watch(token, async (newToken) => {
-    document.cookie = 't=' + newToken + ';domain=digitalleman.com;max-age=604740;samesite=strict;secure';
+  function redirect() {
     let redirect = new URLSearchParams(document.location.search).get('r');
     if (redirect) {
-      redirect = 'https://' + redirect;
-      if (!redirect.includes('digitalleman.com')) redirect += '?t=' + newToken;
+      redirect = `https://${redirect}`;
+      if (!redirect.includes('digitalleman.com')) redirect += `?t=${newToken}`;
       window.location.replace(redirect);
     }
+  }
+
+  watch(token, async (newToken) => {
+    document.cookie = `t=${newToken};domain=digitalleman.com;max-age=604740;samesite=strict;secure`;
+    redirect();
   })
 </script>
 

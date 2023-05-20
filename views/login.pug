@@ -1,0 +1,28 @@
+extends layout.pug
+
+block content
+  form(action=redirect ? `/?r=${redirect}` : '/' class="ds-form" method="post" name="Sign In")
+    div(class="row")
+      div(class="col-lg-4 offset-lg-4")
+        div(class="_ds-form text")
+          label(for="email") Email
+          input(autocapitalize="none" autocomplete="email" id="email" name="email" placeholder="contact@quentinburgniard.com" required type="email")
+    div(class="row")
+      div(class="col-lg-4 offset-lg-4")
+        div(class="_ds-form text")
+          label(for="password") Password
+          input(autocapitalize="none" autocomplete="current-password" id="password" name="password" required type="password")
+    div(class="row")
+      div(class="col-lg-4 offset-lg-4")
+        button(class="ds-link" type="submit")
+          div(class="_ds-link body")
+            div(class="_ds-link title") Sign In
+          div(class="_ds-link action-icon")
+            i(class="bi bi-box-arrow-in-right")
+    div(class="row")
+      div(class="col-lg-4 offset-lg-4")
+        a(alt="Forgot password" class="ds-link-small" href="/forgot-password")
+          div(class="_ds-link body")
+            div(class="_ds-link-small title") Forgot password
+          div(class="_ds-link action-icon")
+            i(class="bi bi-chevron-right")

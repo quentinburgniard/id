@@ -46,7 +46,7 @@ app.get('/', (req, res) => {
     })
     .catch((error) => {
       console.log(error);
-      res.set('set-cookie', 't=; domain=digitalleman.com; max-age=0; path=/; samesite=strict; secure')
+      res.set('set-cookie', 't=; domain=digitalleman.com; max-age=0; path=/; secure')
       //res.set('set-cookie', 't=; domain=digitalleman.com; path=/; samesite=strict; secure');
       res.render('login');
     });
@@ -66,7 +66,7 @@ app.post('/', (req, res) => {
   .then((response) => {
     res.locals.email = response.data.user.email;
     res.locals.token = response.data.jwt;
-    res.append('set-cookie', `t=${res.locals.token}; domain=digitalleman.com; max-age=604740; path=/; samesite=strict; secure`);
+    res.append('set-cookie', `t=${res.locals.token}; domain=digitalleman.com; max-age=604740; path=/; secure`);
     if (res.locals.redirect) {
       let redirect = `https://${res.locals.redirect}`;
       if (!redirect.includes('digitalleman.com')) redirect += `?t=${res.locals.token}`;
@@ -81,7 +81,7 @@ app.post('/', (req, res) => {
     console.log(error);
     let messages = [];
     res.append('set-cookie', `m=${JSON.stringify(messages)}; domain=digitalleman.com; path=/; samesite=strict; secure`);
-    res.append('set-cookie', 't=; domain=digitalleman.com; max-age=0; path=/; samesite=strict; secure');
+    res.append('set-cookie', 't=; domain=digitalleman.com; max-age=0; path=/; secure');
     res.redirect('/');
   });
 });
@@ -110,7 +110,7 @@ app.post('/change-password', (req, res) => {
     res.locals.token = response.data.jwt;
     let messages = [];
     res.append('set-cookie', `m=${JSON.stringify(messages)}; domain=digitalleman.com; path=/; samesite=strict; secure`);
-    res.append('set-cookie', `t=${res.locals.token}; domain=digitalleman.com; path=/; samesite=strict; secure`);
+    res.append('set-cookie', `t=${res.locals.token}; domain=digitalleman.com; path=/; secure`);
     res.redirect('/');
   })
   .catch((error) => {
@@ -181,7 +181,7 @@ app.post('/reset-password', (req, res) => {
 app.get('/sign-out', (req, res) => {
   let messages = [];
   res.append('set-cookie', `m=${JSON.stringify(messages)}; domain=digitalleman.com; path=/; samesite=strict; secure`);
-  res.append('set-cookie', 't=; domain=digitalleman.com; max-age=0; path=/; samesite=strict; secure');
+  res.append('set-cookie', 't=; domain=digitalleman.com; max-age=0; path=/; secure');
   res.redirect('/');
 });
 

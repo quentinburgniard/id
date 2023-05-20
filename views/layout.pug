@@ -1,0 +1,38 @@
+html(lang="en")
+  head
+    link(href="https://static.digitalleman.com/s/digitalleman-icon-small.png" rel="Icon Digital Léman" type="image/png")
+    link(href="https://ds.digitalleman.com/index.min.css" rel="stylesheet")
+    meta(charset="UTF-8")
+    meta(content="width=device-width, initial-scale=1.0" name="viewport")
+    title Digital Léman ID
+  body
+    div(class="container")
+      div(class="row")
+        div(class="col")
+          header(class="ds-header")
+            a(alt="Home page" class="_ds-header logo" href="/")
+              img(alt="Icon Digital Léman" src="https://static.digitalleman.com/s/digitalleman-icon-small.png")
+              div ID
+            div(class="_ds-header hamburger" id="ds-hamburger" role="button")
+              div
+              div
+      block content
+  div(class="ds-menu z-index-medium" id="ds-menu")
+    div(class="container")
+      div(class="row")
+        if token
+          div(class="col-12")
+            a(alt="Français" class="ds-link" href="/sign-out")
+              div(class="_ds-link body")
+                div(class="_ds-link title") Sign Out
+              div(class="_ds-link action-icon")
+                i(class="bi bi-chevron-right")
+        div(class="col-12")
+          a(alt="Français" class="ds-link" href="/")
+            div(class="_ds-link caption-icon")
+              i(class="bi bi-globe")
+            div(class="_ds-link body")
+              div(class="_ds-link title") Français
+            div(class="_ds-link action-icon")
+              i(class="bi bi-chevron-right")
+  script(src="https://ds.digitalleman.com/index.js")

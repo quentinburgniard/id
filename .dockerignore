@@ -1,10 +1,10 @@
-.DS_Store
-.vscode
-dist
-node_modules
 .dockerignore
+.DS_Store
 .git
 .gitignore
+.vscode
 Dockerfile
+email.html
 LICENSE
+node_modules
 README.md

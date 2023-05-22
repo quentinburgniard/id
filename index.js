@@ -27,28 +27,27 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/:language', (req, res, next) => {
+app.use('/:language(en|fr|pt)', (req, res, next) => {
   res.locals.language = req.params.language;
-  if (['en', 'fr', 'pt'].includes(res.locals.language)) {
-    res.locals.path = req.path != '/' ? req.path : '';
-    res.locals.__ = (key) => {
-      switch (res.locals.language) {
-        case 'fr':
-          return fr[key] || key;
-        case 'pt':
-          return pt[key] || key;
-        default:
-          return key;
-      }
+  res.locals.path = req.path.replace(/\/$/, '');
+  res.locals.__ = (key) => {
+    switch (res.locals.language) {
+      case 'fr':
+        return fr[key] || key;
+      case 'pt':
+        return pt[key] || key;
+      default:
+        return key;
     }
-    next();
-  } else {
-    res.status(404);
-    res.send();
   }
+  next();
 });
 
-app.get('/:language', (req, res) => {
+app.get(/^\/(?!en|fr|pt)/, (req, res) => {
+  res.redirect(`/${req.acceptsLanguages('en', 'fr', 'pt') || 'en'}${req.originalUrl.replace(/\/$/, '')}`);
+});
+
+app.get('/:language(en|fr|pt)', (req, res) => {
   if (!res.locals.token) {
     res.render('login');
   } else {
@@ -76,7 +75,7 @@ app.get('/:language', (req, res) => {
   }
 });
 
-app.post('/:language', (req, res) => {
+app.post('/:language(en|fr|pt)', (req, res) => {
   axios.post('https://api.digitalleman.com/v2/auth/local', {
     identifier: req.body.email,
     password: req.body.password
@@ -109,7 +108,7 @@ app.post('/:language', (req, res) => {
   });
 });
 
-app.get('/:language/change-password', (req, res, next) => {
+app.get('/:language(en|fr|pt)/change-password', (req, res, next) => {
   if (res.locals.token) {
     res.render('change-password');
   } else {
@@ -117,7 +116,7 @@ app.get('/:language/change-password', (req, res, next) => {
   }
 });
 
-app.post('/:language/change-password', (req, res) => {
+app.post('/:language(en|fr|pt)/change-password', (req, res) => {
   axios.post('https://api.digitalleman.com/v2/auth/change-password', {
     currentPassword: req.body.currentPassword,
     password: req.body.password,
@@ -143,11 +142,11 @@ app.post('/:language/change-password', (req, res) => {
   });
 });
 
-app.get('/:language/forgot-password', (req, res) => {
+app.get('/:language(en|fr|pt)/forgot-password', (req, res) => {
   res.render('forgot-password');
 });
 
-app.post('/:language/forgot-password', (req, res) => {
+app.post('/:language(en|fr|pt)/forgot-password', (req, res) => {
   axios.post('https://api.digitalleman.com/v2/auth/forgot-password', {
     email: req.body.email
   },
@@ -169,7 +168,7 @@ app.post('/:language/forgot-password', (req, res) => {
   });
 });
 
-app.get('/:language/reset-password', (req, res, next) => {
+app.get('/:language(en|fr|pt)/reset-password', (req, res, next) => {
   if(req.query.t) {
     res.locals.token = req.query.t;
     res.render('reset-password');
@@ -178,7 +177,7 @@ app.get('/:language/reset-password', (req, res, next) => {
   }
 });
 
-app.post('/:language/reset-password', (req, res) => {
+app.post('/:language(en|fr|pt)/reset-password', (req, res) => {
   axios.post('https://api.digitalleman.com/v2/auth/reset-password', {
     code: req.body.token,
     password: req.body.password,
@@ -201,7 +200,7 @@ app.post('/:language/reset-password', (req, res) => {
   });
 });
 
-app.get('/:language/sign-out', (req, res) => {
+app.get('/:language(en|fr|pt)/sign-out', (req, res) => {
   let messages = [];
   res.append('set-cookie', `m=${JSON.stringify(messages)}; domain=digitalleman.com; path=/; samesite=strict; secure`);
   res.append('set-cookie', 't=; domain=digitalleman.com; max-age=0; path=/; secure');

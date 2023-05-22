@@ -4,11 +4,11 @@ block content
   div(class="row")
     div(class="col-12")
       div(class="ds-info")
-        div(class="_ds-info label") Email
+        div(class="_ds-info label")= __('Email')
         div(class="_ds-info text")= email
     div(class="col-lg-4")
-      a(alt="Change password" class="ds-link" href="/change-password")
+      a(alt=__('Change password') class="ds-link" href=`/${language}/change-password`)
         div(class="_ds-link body")
-          div(class="_ds-link title") Change password
+          div(class="_ds-link title")= __('Change password')
         div(class="_ds-link action-icon")
           i(class="bi bi-chevron-right")

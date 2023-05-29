@@ -97,14 +97,14 @@ app.post('/:language(en|fr|pt)', (req, res) => {
       if (!redirect.includes('digitalleman.com')) redirect += `?t=${res.locals.token}`;
       res.redirect(redirect);
     } else {
-      let messages = [];
+      let messages = [res.locals.__('Login Successful')];
       res.cookie('m', JSON.stringify(messages), { domain: 'digitalleman.com', path: '/', sameSite: true, secure: true });
       res.redirect(`/${res.locals.language}`);
     }
   })
   .catch((error) => {
     console.log(error);
-    let messages = [];
+    let messages = [res.locals.__('Login Failed')];
     res.cookie('m', JSON.stringify(messages), { domain: 'digitalleman.com', path: '/', sameSite: true, secure: true });
     res.clearCookie('t', { domain: 'digitalleman.com', path:'/' });
     res.redirect(`/${res.locals.language}`);
@@ -133,13 +133,13 @@ app.post('/:language(en|fr|pt)/change-password', (req, res) => {
   })
   .then((response) => {
     res.locals.token = response.data.jwt;
-    let messages = [__('Password Changed')];
+    let messages = [res.locals.__('Password Changed')];
     res.cookie('m', JSON.stringify(messages), { domain: 'digitalleman.com', path: '/', sameSite: true, secure: true });
     res.cookie('t', res.locals.token, { domain: 'digitalleman.com', maxAge: 604740, path: '/', secure: true });
     res.redirect(`/${res.locals.language}`);
   })
   .catch((error) => {
-    let messages = [__('Password Change Failed')];
+    let messages = [res.locals.__('Password Change Failed')];
     res.cookie('m', JSON.stringify(messages), { domain: 'digitalleman.com', path: '/', sameSite: true, secure: true });
     res.redirect(`/${res.locals.language}/change-password`);
   });
@@ -159,13 +159,13 @@ app.post('/:language(en|fr|pt)/forgot-password', (req, res) => {
     }
   })
   .then((response) => {
-    let messages = [__('Reset Password Email Sent')];
+    let messages = [res.locals.__('Reset Password Email Sent')];
     res.cookie('m', JSON.stringify(messages), { domain: 'digitalleman.com', path: '/', sameSite: true, secure: true });
     res.redirect(`/${res.locals.language}`);
   })
   .catch((error) => {
     console.log(error);
-    let messages = [__('Reset Password Email Failed')];
+    let messages = [res.locals.__('Reset Password Email Failed')];
     res.cookie('m', JSON.stringify(messages), { domain: 'digitalleman.com', path: '/', sameSite: true, secure: true });
     res.redirect(`/${res.locals.language}/forgot-password`);
   });
@@ -192,19 +192,19 @@ app.post('/:language(en|fr|pt)/reset-password', (req, res) => {
     }
   })
   .then((response) => {
-    let messages = [__('Your password has been reset')];
+    let messages = [res.locals.__('Your password has been reset')];
     res.cookie('m', JSON.stringify(messages), { domain: 'digitalleman.com', path: '/', sameSite: true, secure: true });
     res.redirect(`/${res.locals.language}`);
   })
   .catch((error) => {
-    let messages = [__('Password reset failed')];
+    let messages = [res.locals.__('Password reset failed')];
     res.cookie('m', JSON.stringify(messages), { domain: 'digitalleman.com', path: '/', sameSite: true, secure: true });
     res.redirect(`/${res.locals.language}/reset-password?t=${req.body.token}`);
   });
 });
 
 app.get('/:language(en|fr|pt)/sign-out', (req, res) => {
-  let messages = [__('Sign Out successful')];
+  let messages = [res.locals.__('Sign Out successful')];
   res.cookie('m', JSON.stringify(messages), { domain: 'digitalleman.com', path: '/', sameSite: true, secure: true });
   res.clearCookie('t', { domain: 'digitalleman.com', path:'/' });
   res.redirect(`/${res.locals.language}`);

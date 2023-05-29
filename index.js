@@ -68,7 +68,8 @@ app.get('/:language(en|fr|pt)', (req, res) => {
     })
     .catch((error) => {
       console.log(error);
-      res.set('set-cookie', 't=; domain=digitalleman.com; max-age=0; path=/; secure')
+      res.clearCookie('t', { domain: 'digitalleman.com', path:'/' });
+      //res.set('set-cookie', 't=; domain=digitalleman.com; max-age=0; path=/; secure')
       //res.set('set-cookie', 't=; domain=digitalleman.com; path=/; samesite=strict; secure');
       res.render('login');
     });
@@ -103,7 +104,7 @@ app.post('/:language(en|fr|pt)', (req, res) => {
     console.log(error);
     let messages = [];
     res.append('set-cookie', `m=${JSON.stringify(messages)}; domain=digitalleman.com; path=/; samesite=strict; secure`);
-    res.append('set-cookie', 't=; domain=digitalleman.com; max-age=0; path=/; secure');
+    res.clearCookie('t', { domain: 'digitalleman.com', path:'/' });
     res.redirect(`/${res.locals.language}`);
   });
 });
@@ -203,7 +204,7 @@ app.post('/:language(en|fr|pt)/reset-password', (req, res) => {
 app.get('/:language(en|fr|pt)/sign-out', (req, res) => {
   let messages = [];
   res.append('set-cookie', `m=${JSON.stringify(messages)}; domain=digitalleman.com; path=/; samesite=strict; secure`);
-  res.append('set-cookie', 't=; domain=digitalleman.com; max-age=0; path=/; secure');
+  res.clearCookie('t', { domain: 'digitalleman.com', path:'/' });
   res.redirect(`/${res.locals.language}`);
 });
 

@@ -55,4 +55,16 @@ html(lang=language)
                 div(class="_ds-link title") Português
               div(class="_ds-link action-icon")
                 i(class="bi bi-chevron-right")
+  div(class="ds-toasts z-index-medium" id="ds-toasts")
+    div(class="container")
+      div(class="row")
   script(src="https://ds.digitalleman.com/index.js")
+  each message in messages
+    script.
+      (() => {
+        if (window.ds && ds.ready) {
+          ds.newToast('#{message}');
+        } else {
+          document.addEventListener('ds.ready', () => { ds.newToast('#{message}') }, { once: true });
+        }
+      })();

@@ -23,6 +23,8 @@ app.use(morgan(':method :url :status'));
 
 app.use((req, res, next) => {
   res.locals.token = req.cookies.t || null;
+  res.locals.messages = req.cookies.m ? JSON.parse(req.cookies.m) : [];
+  res.clearCookie('m', { domain: 'digitalleman.com', path: '/' });
   res.locals.redirect = req.query.r || null;
   next();
 });

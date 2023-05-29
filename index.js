@@ -89,21 +89,21 @@ app.post('/:language(en|fr|pt)', (req, res) => {
   .then((response) => {
     res.locals.email = response.data.user.email;
     res.locals.token = response.data.jwt;
-    res.append('set-cookie', `t=${res.locals.token}; domain=digitalleman.com; max-age=604740; path=/; secure`);
+    res.cookie('t', res.locals.token, { domain: 'digitalleman.com', maxAge: 604740, path: '/', secure: true });
     if (res.locals.redirect) {
       let redirect = `https://${res.locals.redirect}`;
       if (!redirect.includes('digitalleman.com')) redirect += `?t=${res.locals.token}`;
       res.redirect(redirect);
     } else {
       let messages = [];
-      res.append('set-cookie', `m=${JSON.stringify(messages)}; domain=digitalleman.com; path=/; samesite=strict; secure`);
+      res.cookie('m', JSON.stringify(messages), { domain: 'digitalleman.com', path: '/', sameSite: true, secure: true });
       res.redirect(`/${res.locals.language}`);
     }
   })
   .catch((error) => {
     console.log(error);
     let messages = [];
-    res.append('set-cookie', `m=${JSON.stringify(messages)}; domain=digitalleman.com; path=/; samesite=strict; secure`);
+    res.cookie('m', JSON.stringify(messages), { domain: 'digitalleman.com', path: '/', sameSite: true, secure: true });
     res.clearCookie('t', { domain: 'digitalleman.com', path:'/' });
     res.redirect(`/${res.locals.language}`);
   });
@@ -132,13 +132,13 @@ app.post('/:language(en|fr|pt)/change-password', (req, res) => {
   .then((response) => {
     res.locals.token = response.data.jwt;
     let messages = [];
-    res.append('set-cookie', `m=${JSON.stringify(messages)}; domain=digitalleman.com; path=/; samesite=strict; secure`);
-    res.append('set-cookie', `t=${res.locals.token}; domain=digitalleman.com; path=/; secure`);
+    res.cookie('m', JSON.stringify(messages), { domain: 'digitalleman.com', path: '/', sameSite: true, secure: true });
+    res.cookie('t', res.locals.token, { domain: 'digitalleman.com', maxAge: 604740, path: '/', secure: true });
     res.redirect(`/${res.locals.language}`);
   })
   .catch((error) => {
     let messages = [];
-    res.set('set-cookie', `m=${JSON.stringify(messages)}; domain=digitalleman.com; path=/; samesite=strict; secure`);
+    res.cookie('m', JSON.stringify(messages), { domain: 'digitalleman.com', path: '/', sameSite: true, secure: true });
     res.redirect(`/${res.locals.language}/change-password`);
   });
 });
@@ -158,13 +158,13 @@ app.post('/:language(en|fr|pt)/forgot-password', (req, res) => {
   })
   .then((response) => {
     let messages = [];
-    res.set('set-cookie', `m=${JSON.stringify(messages)}; domain=digitalleman.com; path=/; samesite=strict; secure`);
+    res.cookie('m', JSON.stringify(messages), { domain: 'digitalleman.com', path: '/', sameSite: true, secure: true });
     res.redirect(`/${res.locals.language}`);
   })
   .catch((error) => {
     console.log(error);
     let messages = [];
-    res.set('set-cookie', `m=${JSON.stringify(messages)}; domain=digitalleman.com; path=/; samesite=strict; secure`);
+    res.cookie('m', JSON.stringify(messages), { domain: 'digitalleman.com', path: '/', sameSite: true, secure: true });
     res.redirect(`/${res.locals.language}/forgot-password`);
   });
 });
@@ -191,19 +191,19 @@ app.post('/:language(en|fr|pt)/reset-password', (req, res) => {
   })
   .then((response) => {
     let messages = [];
-    res.set('set-cookie', `m=${JSON.stringify(messages)}; domain=digitalleman.com; path=/; samesite=strict; secure`);
+    res.cookie('m', JSON.stringify(messages), { domain: 'digitalleman.com', path: '/', sameSite: true, secure: true });
     res.redirect(`/${res.locals.language}`);
   })
   .catch((error) => {
     let messages = [];
-    res.set('set-cookie', `m=${JSON.stringify(messages)}; domain=digitalleman.com; path=/; samesite=strict; secure`);
+    res.cookie('m', JSON.stringify(messages), { domain: 'digitalleman.com', path: '/', sameSite: true, secure: true });
     res.redirect(`/${res.locals.language}/reset-password?t=${req.body.token}`);
   });
 });
 
 app.get('/:language(en|fr|pt)/sign-out', (req, res) => {
   let messages = [];
-  res.append('set-cookie', `m=${JSON.stringify(messages)}; domain=digitalleman.com; path=/; samesite=strict; secure`);
+  res.cookie('m', JSON.stringify(messages), { domain: 'digitalleman.com', path: '/', sameSite: true, secure: true });
   res.clearCookie('t', { domain: 'digitalleman.com', path:'/' });
   res.redirect(`/${res.locals.language}`);
 });

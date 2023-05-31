@@ -51,7 +51,7 @@ app.get(/^\/(?!en|fr|pt)/, (req, res) => {
 
 app.get('/:language(en|fr|pt)', (req, res) => {
   if (!res.locals.token) {
-    res.render('login');
+    res.render('sign-in');
   } else {
     axios.get('https://api.digitalleman.com/v2/users/me', {
       headers: {
@@ -73,7 +73,7 @@ app.get('/:language(en|fr|pt)', (req, res) => {
       res.clearCookie('t', { domain: 'digitalleman.com', path:'/' });
       //res.set('set-cookie', 't=; domain=digitalleman.com; max-age=0; path=/; secure')
       //res.set('set-cookie', 't=; domain=digitalleman.com; path=/; samesite=strict; secure');
-      res.render('login');
+      res.render('sign-in');
     });
   }
 });
@@ -108,6 +108,40 @@ app.post('/:language(en|fr|pt)', (req, res) => {
     res.cookie('m', JSON.stringify(messages), { domain: 'digitalleman.com', path: '/', sameSite: true, secure: true });
     res.clearCookie('t', { domain: 'digitalleman.com', path:'/' });
     res.redirect(`/${res.locals.language}`);
+  });
+});
+
+app.get('/:language(en|fr|pt)/sign-up', (req, res) => {
+  if (!res.locals.token) {
+    res.render('sign-up');
+  } else {
+    res.redirect(`/${res.locals.language}`);
+  }
+});
+
+app.post('/:language(en|fr|pt)/sign-up', (req, res) => {
+  axios.post('https://api.digitalleman.com/v2/auth/local/register', {
+    email: req.body.email,
+    password: req.body.password,
+    username: req.body.email
+  },
+  {
+    headers: {
+      'content-type': 'application/json'
+    }
+  })
+  .then((response) => {
+    let messages = [res.locals.__('Please validate your email')];
+    res.cookie('m', JSON.stringify(messages), { domain: 'digitalleman.com', path: '/', sameSite: true, secure: true });
+    res.clearCookie('t', { domain: 'digitalleman.com', path:'/' });
+    res.redirect(`/${res.locals.language}`);
+  })
+  .catch((error) => {
+    console.log(error.response);
+    let messages = [res.locals.__('Registration Failed')];
+    res.cookie('m', JSON.stringify(messages), { domain: 'digitalleman.com', path: '/', sameSite: true, secure: true });
+    res.clearCookie('t', { domain: 'digitalleman.com', path:'/' });
+    res.redirect(`/${res.locals.language}/sign-up`);
   });
 });
 

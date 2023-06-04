@@ -1,0 +1,25 @@
+extends layout.pug
+
+block content
+  div(class="row")
+    each file in files.data
+      div(class="col-12")
+        a(alt=file.attributes.slug class="ds-link" href=`https://api.digitalleman.com/v2/assets/${file.attributes.slug}` target="_blank")
+          div(class="_ds-link caption-icon")
+            if /(jpg|png|webp)$/.test(file.attributes.slug)
+              i(class="bi bi-file-earmark-image")
+            else if /(pdf)$/.test(file.attributes.slug)
+              i(class="bi bi-file-earmark-pdf")
+            else
+              i(class="bi bi-file-earmark")
+          div(class="_ds-link body")
+            div(class="_ds-link title")= file.attributes.slug
+            div(class="_ds-link text")
+              if file.attributes.public
+                .
+                  #[i(class="bi bi-globe")] #{__('Public')}
+              else
+                .
+                  #[i(class="bi bi-lock-fill")] #{__('Private')}
+          div(class="_ds-link action-icon")
+            i(class="bi bi-arrow-up-right")

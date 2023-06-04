@@ -111,40 +111,6 @@ app.post('/:language(en|fr|pt)', (req, res) => {
   });
 });
 
-app.get('/:language(en|fr|pt)/sign-up', (req, res) => {
-  if (!res.locals.token) {
-    res.render('sign-up');
-  } else {
-    res.redirect(`/${res.locals.language}`);
-  }
-});
-
-app.post('/:language(en|fr|pt)/sign-up', (req, res) => {
-  axios.post('https://api.digitalleman.com/v2/auth/local/register', {
-    email: req.body.email,
-    password: req.body.password,
-    username: req.body.email
-  },
-  {
-    headers: {
-      'content-type': 'application/json'
-    }
-  })
-  .then((response) => {
-    let messages = [res.locals.__('Please validate your email')];
-    res.cookie('m', JSON.stringify(messages), { domain: 'digitalleman.com', path: '/', sameSite: true, secure: true });
-    res.clearCookie('t', { domain: 'digitalleman.com', path:'/' });
-    res.redirect(`/${res.locals.language}`);
-  })
-  .catch((error) => {
-    console.log(error.response);
-    let messages = [res.locals.__('Registration Failed')];
-    res.cookie('m', JSON.stringify(messages), { domain: 'digitalleman.com', path: '/', sameSite: true, secure: true });
-    res.clearCookie('t', { domain: 'digitalleman.com', path:'/' });
-    res.redirect(`/${res.locals.language}/sign-up`);
-  });
-});
-
 app.get('/:language(en|fr|pt)/change-password', (req, res, next) => {
   if (res.locals.token) {
     res.render('change-password');
@@ -177,6 +143,23 @@ app.post('/:language(en|fr|pt)/change-password', (req, res) => {
     res.cookie('m', JSON.stringify(messages), { domain: 'digitalleman.com', path: '/', sameSite: true, secure: true });
     res.redirect(`/${res.locals.language}/change-password`);
   });
+});
+
+app.get('/:language(en|fr|pt)/files', (req, res) => {
+  if (!res.locals.token) {
+    res.redirect(`/${res.locals.language}`);
+  } else {
+    axios.get('https://api.digitalleman.com/v2/assets', {
+      headers: {
+        'authorization': `Bearer ${res.locals.token}`
+      }
+    })
+    .then((response) => {
+      res.render('files', {
+        files: response.data
+      });
+    });
+  }
 });
 
 app.get('/:language(en|fr|pt)/forgot-password', (req, res) => {
@@ -242,6 +225,40 @@ app.get('/:language(en|fr|pt)/sign-out', (req, res) => {
   res.cookie('m', JSON.stringify(messages), { domain: 'digitalleman.com', path: '/', sameSite: true, secure: true });
   res.clearCookie('t', { domain: 'digitalleman.com', path:'/' });
   res.redirect(`/${res.locals.language}`);
+});
+
+app.get('/:language(en|fr|pt)/sign-up', (req, res) => {
+  if (!res.locals.token) {
+    res.render('sign-up');
+  } else {
+    res.redirect(`/${res.locals.language}`);
+  }
+});
+
+app.post('/:language(en|fr|pt)/sign-up', (req, res) => {
+  axios.post('https://api.digitalleman.com/v2/auth/local/register', {
+    email: req.body.email,
+    password: req.body.password,
+    username: req.body.email
+  },
+  {
+    headers: {
+      'content-type': 'application/json'
+    }
+  })
+  .then((response) => {
+    let messages = [res.locals.__('Please validate your email')];
+    res.cookie('m', JSON.stringify(messages), { domain: 'digitalleman.com', path: '/', sameSite: true, secure: true });
+    res.clearCookie('t', { domain: 'digitalleman.com', path:'/' });
+    res.redirect(`/${res.locals.language}`);
+  })
+  .catch((error) => {
+    console.log(error.response);
+    let messages = [res.locals.__('Registration Failed')];
+    res.cookie('m', JSON.stringify(messages), { domain: 'digitalleman.com', path: '/', sameSite: true, secure: true });
+    res.clearCookie('t', { domain: 'digitalleman.com', path:'/' });
+    res.redirect(`/${res.locals.language}/sign-up`);
+  });
 });
 
 app.use((req, res) => {

@@ -8,7 +8,7 @@ import pt from './pt.js';
 //import qs from 'qs';
 
 const app = express();
-const port = 80;
+const port = 8181;
 
 app.disable('x-powered-by');
 //app.set('env', 'development');
@@ -69,7 +69,6 @@ app.get('/:language(en|fr|pt)', (req, res) => {
       }
     })
     .catch((error) => {
-      console.log(error);
       res.clearCookie('t', { domain: 'digitalleman.com', path:'/' });
       //res.set('set-cookie', 't=; domain=digitalleman.com; max-age=0; path=/; secure')
       //res.set('set-cookie', 't=; domain=digitalleman.com; path=/; samesite=strict; secure');
@@ -103,7 +102,6 @@ app.post('/:language(en|fr|pt)', (req, res) => {
     }
   })
   .catch((error) => {
-    console.log(error);
     let messages = [res.locals.__('Login Failed')];
     res.cookie('m', JSON.stringify(messages), { domain: 'digitalleman.com', path: '/', sameSite: true, secure: true });
     res.clearCookie('t', { domain: 'digitalleman.com', path:'/' });
@@ -181,7 +179,6 @@ app.post('/:language(en|fr|pt)/forgot-password', (req, res) => {
     res.redirect(`/${res.locals.language}`);
   })
   .catch((error) => {
-    console.log(error);
     let messages = [res.locals.__('Reset Password Email Failed')];
     res.cookie('m', JSON.stringify(messages), { domain: 'digitalleman.com', path: '/', sameSite: true, secure: true });
     res.redirect(`/${res.locals.language}/forgot-password`);
@@ -253,7 +250,6 @@ app.post('/:language(en|fr|pt)/sign-up', (req, res) => {
     res.redirect(`/${res.locals.language}`);
   })
   .catch((error) => {
-    console.log(error.response);
     let messages = [res.locals.__('Registration Failed')];
     res.cookie('m', JSON.stringify(messages), { domain: 'digitalleman.com', path: '/', sameSite: true, secure: true });
     res.clearCookie('t', { domain: 'digitalleman.com', path:'/' });
@@ -267,7 +263,6 @@ app.use((req, res) => {
 });
 
 app.use((err, req, res, next) => {
-  console.log(err);
   res.status(500);
   res.send();
 });

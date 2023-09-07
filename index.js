@@ -8,7 +8,7 @@ import pt from './pt.js';
 //import qs from 'qs';
 
 const app = express();
-const port = 8181;
+const port = 80;
 
 app.disable('x-powered-by');
 //app.set('env', 'development');

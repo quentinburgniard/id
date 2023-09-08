@@ -90,7 +90,7 @@ app.post('/:language(en|fr|pt)', (req, res) => {
   .then((response) => {
     res.locals.email = response.data.user.email;
     res.locals.token = response.data.jwt;
-    res.cookie('t', res.locals.token, { domain: 'digitalleman.com', maxAge: 604740, path: '/', secure: true });
+    res.cookie('t', res.locals.token, { domain: 'digitalleman.com', maxAge: 604200000, path: '/', secure: true });
     if (res.locals.redirect) {
       let redirect = `https://${res.locals.redirect}`;
       if (!redirect.includes('digitalleman.com')) redirect += `?t=${res.locals.token}`;
@@ -133,7 +133,7 @@ app.post('/:language(en|fr|pt)/change-password', (req, res) => {
     res.locals.token = response.data.jwt;
     let messages = [res.locals.__('Password Changed')];
     res.cookie('m', JSON.stringify(messages), { domain: 'digitalleman.com', path: '/', sameSite: true, secure: true });
-    res.cookie('t', res.locals.token, { domain: 'digitalleman.com', maxAge: 604740, path: '/', secure: true });
+    res.cookie('t', res.locals.token, { domain: 'digitalleman.com', maxAge: 604200000, path: '/', secure: true });
     res.redirect(`/${res.locals.language}`);
   })
   .catch((error) => {

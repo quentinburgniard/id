@@ -7,7 +7,7 @@
     "pug": "3.x"
   },
   "devDependencies": {
-    "nodemon": "2.x"
+    "nodemon": "3.x"
   },
   "main": "index.js",
   "name": "id",

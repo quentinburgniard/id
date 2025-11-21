@@ -2,7 +2,7 @@
   "dependencies": {
     "axios": "^1.12.2",
     "cookie-parser": "^1.4.7",
-    "express": "^4.21.2",
+    "express": "^5.1.0",
     "morgan": "^1.10.1",
     "pug": "^3.0.3"
   },
@@ -14,7 +14,8 @@
   "private": true,
   "scripts": {
     "develop": "nodemon",
-    "start": "index.js"
+    "start": "./index.js",
+    "test": "test.js"
   },
   "type": "module"
 }

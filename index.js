@@ -95,13 +95,15 @@ app.post("/:language", (req, res) => {
         },
       }
     )
-    .then((response) => {
+      .then((response) => {
       res.locals.email = response.data.user.email;
       res.locals.token = response.data.jwt;
       res.cookie("t", res.locals.token, {
         domain: "digitalleman.com",
         maxAge: 604200000,
         path: "/",
+        httpOnly: true,
+        sameSite: "lax",
         secure: true,
       });
       if (res.locals.redirect) {
@@ -157,7 +159,7 @@ app.post("/:language/change-password", (req, res) => {
         },
       }
     )
-    .then((response) => {
+      .then((response) => {
       res.locals.token = response.data.jwt;
       let messages = [res.locals.__("Password Changed")];
       res.cookie("m", JSON.stringify(messages), {
@@ -170,6 +172,8 @@ app.post("/:language/change-password", (req, res) => {
         domain: "digitalleman.com",
         maxAge: 604200000,
         path: "/",
+        httpOnly: true,
+        sameSite: "lax",
         secure: true,
       });
       res.redirect(`/${res.locals.language}`);
@@ -221,7 +225,7 @@ app.post("/:language/forgot-password", (req, res) => {
         },
       }
     )
-    .then(() => {
+      .then(() => {
       let messages = [res.locals.__("Reset Password Email Sent")];
       res.cookie("m", JSON.stringify(messages), {
         domain: "digitalleman.com",
@@ -267,7 +271,7 @@ app.post("/:language/reset-password", (req, res) => {
         },
       }
     )
-    .then(() => {
+      .then(() => {
       let messages = [res.locals.__("Your password has been reset")];
       res.cookie("m", JSON.stringify(messages), {
         domain: "digitalleman.com",
@@ -326,12 +330,13 @@ app.post("/:language/sign-up", (req, res) => {
         },
       }
     )
-    .then(() => {
+      .then(() => {
       let messages = [res.locals.__("Please validate your email")];
       res.cookie("m", JSON.stringify(messages), {
         domain: "digitalleman.com",
         path: "/",
-        sameSite: true,
+        httpOnly: true,
+        sameSite: "lax",
         secure: true,
       });
       res.clearCookie("t", { domain: "digitalleman.com", path: "/" });
@@ -342,7 +347,8 @@ app.post("/:language/sign-up", (req, res) => {
       res.cookie("m", JSON.stringify(messages), {
         domain: "digitalleman.com",
         path: "/",
-        sameSite: true,
+        httpOnly: true,
+        sameSite: "lax",
         secure: true,
       });
       res.clearCookie("t", { domain: "digitalleman.com", path: "/" });

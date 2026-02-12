@@ -1,7 +1,7 @@
 extends layout.pug
 
 block content
-  form(action=redirect ? `/${language}?r=${redirect}` : `/${language}` class="ds-form" method="post" name="Sign In")
+  form(action=redirect ? `/${language}?r` : `/${language}` class="ds-form" method="post" name="Sign in")
     div(class="row")
       div(class="col-lg-4 offset-lg-4")
         div(class="_ds-form text")
@@ -16,14 +16,14 @@ block content
       div(class="col-lg-4 offset-lg-4")
         button(class="ds-link" type="submit")
           div(class="_ds-link body")
-            div(class="_ds-link title")= __('Sign In')
+            div(class="_ds-link title")= __('Sign in')
           div(class="_ds-link action-icon")
             i(class="bi bi-box-arrow-in-right")
     div(class="row")
       div(class="col-lg-2 offset-lg-4")
-        a(alt=__('Sign Up') class="ds-link-small" href=`/${language}/sign-up`)
+        a(alt=__('Sign up') class="ds-link-small" href=`/${language}/sign-up`)
           div(class="_ds-link body")
-            div(class="_ds-link-small title")= __('Sign Up')
+            div(class="_ds-link-small title")= __('Sign up')
           div(class="_ds-link action-icon")
             i(class="bi bi-chevron-right")
       div(class="col-lg-2")

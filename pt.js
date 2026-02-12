@@ -1,7 +1,16 @@
 export default {
-  'Email': 'E-mail',
-  'Forgot password': 'Esqueci a senha',
-  'Password': 'Senha',
-  'Reset password': 'Redefinir senha',
-  'Sign In': 'Entrar'
-}
+  "Change password": "Alterar palavra-passe",
+  "Confirm password": "Confirmar palavra-passe",
+  "Current password": "Palavra-passe atual",
+  Email: "E-mail",
+  "Forgot password": "Esqueceu-se da palavra-passe",
+  "Home page": "Página inicial",
+  "New password": "Nova palavra-passe",
+  Password: "Palavra-passe",
+  "Reset password": "Repor palavra-passe",
+  "Sign in": "Iniciar sessão",
+  "Sign out": "Terminar sessão",
+  "My files": "Os meus ficheiros",
+  "Upload file": "Importar ficheiro",
+  "Sign up": "Criar conta",
+};

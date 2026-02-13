@@ -25,7 +25,7 @@ block content
   div(class="row")
     each file in files
       div(class="col-12")
-        a(alt=file.name class="ds-link" href=`https://api.preview.digitalleman.com/v5/files/${file.documentId}` target="_blank")
+        a(alt=file.name class="ds-link" href=file.url target="_blank")
           div(class="_ds-link caption-icon")
             if /(jpeg|png|webp)$/.test(file.extension)
               i(class="bi bi-file-earmark-image")

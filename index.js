@@ -7,7 +7,7 @@ import pt from "./pt.js";
 import helmet from "helmet";
 
 const app = express();
-const port = 8080;
+const port = process.env.PORT ?? 80;
 const DOMAIN = process.env.DOMAIN;
 const BASE_URL = process.env.BASE_URL;
 

@@ -8,8 +8,8 @@ import helmet from "helmet";
 
 const app = express();
 const port = process.env.PORT ?? 80;
-const DOMAIN = process.env.DOMAIN;
-const BASE_URL = process.env.BASE_URL;
+const COOKIE_DOMAIN = process.env.COOKIE_DOMAIN;
+const API_BASE_URL = process.env.API_BASE_URL;
 
 app.disable("x-powered-by");
 app.set("view cache", false);
@@ -27,7 +27,7 @@ app.use((req, res, next) => {
   res.locals.redirect = req.query.r !== undefined;
   res.locals.token = req.cookies.t ?? undefined;
   res.locals.messages = req.cookies.m ? JSON.parse(req.cookies.m) : [];
-  res.clearCookie("m", { domain: DOMAIN, path: "/" });
+  res.clearCookie("m", { domain: COOKIE_DOMAIN, path: "/" });
   next();
 });
 
@@ -63,7 +63,7 @@ app.get("/:language", (req, res) => {
     res.render("sign-in");
   } else {
     axios
-      .get(`${BASE_URL}/users/me?populate=role`, {
+      .get(`${API_BASE_URL}/users/me?populate=role`, {
         headers: {
           authorization: `Bearer ${res.locals.token}`,
         },
@@ -78,7 +78,7 @@ app.get("/:language", (req, res) => {
         }
       })
       .catch(() => {
-        res.clearCookie("t", { domain: DOMAIN, path: "/" });
+        res.clearCookie("t", { domain: COOKIE_DOMAIN, path: "/" });
         res.render("sign-in");
       });
   }
@@ -87,7 +87,7 @@ app.get("/:language", (req, res) => {
 app.post("/:language", (req, res) => {
   axios
     .post(
-      `${BASE_URL}/auth/local?populate=role`,
+      `${API_BASE_URL}/auth/local?populate=role`,
       {
         identifier: req.body.email,
         password: req.body.password,
@@ -102,7 +102,7 @@ app.post("/:language", (req, res) => {
       res.locals.email = response.data.user.email;
       res.locals.token = response.data.jwt;
       res.cookie("t", res.locals.token, {
-        domain: DOMAIN,
+        domain: COOKIE_DOMAIN,
         maxAge: 604200000,
         path: "/",
         httpOnly: true,
@@ -114,7 +114,7 @@ app.post("/:language", (req, res) => {
       } else {
         let messages = [res.locals.__("Login Successful")];
         res.cookie("m", JSON.stringify(messages), {
-          domain: DOMAIN,
+          domain: COOKIE_DOMAIN,
           path: "/",
           httpOnly: true,
           sameSite: "strict",
@@ -126,13 +126,13 @@ app.post("/:language", (req, res) => {
     .catch(() => {
       let messages = [res.locals.__("Login Failed")];
       res.cookie("m", JSON.stringify(messages), {
-        domain: DOMAIN,
+        domain: COOKIE_DOMAIN,
         path: "/",
         httpOnly: true,
         sameSite: "strict",
         secure: true,
       });
-      res.clearCookie("t", { domain: DOMAIN, path: "/" });
+      res.clearCookie("t", { domain: COOKIE_DOMAIN, path: "/" });
       res.redirect(`/${res.locals.language}`);
     });
 });
@@ -148,7 +148,7 @@ app.get("/:language/change-password", (req, res, next) => {
 app.post("/:language/change-password", (req, res) => {
   axios
     .post(
-      `${BASE_URL}/auth/change-password`,
+      `${API_BASE_URL}/auth/change-password`,
       {
         currentPassword: req.body.currentPassword,
         password: req.body.password,
@@ -165,14 +165,14 @@ app.post("/:language/change-password", (req, res) => {
       res.locals.token = response.data.jwt;
       let messages = [res.locals.__("Password Changed")];
       res.cookie("m", JSON.stringify(messages), {
-        domain: DOMAIN,
+        domain: COOKIE_DOMAIN,
         path: "/",
         httpOnly: true,
         sameSite: "strict",
         secure: true,
       });
       res.cookie("t", res.locals.token, {
-        domain: DOMAIN,
+        domain: COOKIE_DOMAIN,
         maxAge: 604200000,
         path: "/",
         httpOnly: true,
@@ -184,7 +184,7 @@ app.post("/:language/change-password", (req, res) => {
     .catch(() => {
       let messages = [res.locals.__("Password Change Failed")];
       res.cookie("m", JSON.stringify(messages), {
-        domain: DOMAIN,
+        domain: COOKIE_DOMAIN,
         path: "/",
         httpOnly: true,
         sameSite: "strict",
@@ -199,7 +199,7 @@ app.get("/:language/files", (_, res) => {
     res.redirect(`/${res.locals.language}`);
   } else {
     axios
-      .get(`${BASE_URL}/files`, {
+      .get(`${API_BASE_URL}/files`, {
         headers: {
           authorization: `Bearer ${res.locals.token}`,
         },
@@ -218,7 +218,7 @@ app.post("/:language/files", (req, res) => {
     res.redirect(`/${res.locals.language}`);
   } else {
     axios
-      .post(`${BASE_URL}/files`, req, {
+      .post(`${API_BASE_URL}/files`, req, {
         headers: {
           authorization: `Bearer ${res.locals.token}`,
           "content-type": req.headers["content-type"],
@@ -228,7 +228,7 @@ app.post("/:language/files", (req, res) => {
       .then(() => {
         let messages = [res.locals.__("File uploaded")];
         res.cookie("m", JSON.stringify(messages), {
-          domain: DOMAIN,
+          domain: COOKIE_DOMAIN,
           path: "/",
           httpOnly: true,
           sameSite: "strict",
@@ -240,7 +240,7 @@ app.post("/:language/files", (req, res) => {
         console.log(err);
         let messages = [res.locals.__("File upload failed")];
         res.cookie("m", JSON.stringify(messages), {
-          domain: DOMAIN,
+          domain: COOKIE_DOMAIN,
           path: "/",
           httpOnly: true,
           sameSite: "strict",
@@ -258,7 +258,7 @@ app.get("/:language/forgot-password", (_, res) => {
 app.post("/:language/forgot-password", (req, res) => {
   axios
     .post(
-      `${BASE_URL}/auth/forgot-password`,
+      `${API_BASE_URL}/auth/forgot-password`,
       {
         email: req.body.email,
       },
@@ -271,7 +271,7 @@ app.post("/:language/forgot-password", (req, res) => {
     .then(() => {
       let messages = [res.locals.__("Reset Password Email Sent")];
       res.cookie("m", JSON.stringify(messages), {
-        domain: DOMAIN,
+        domain: COOKIE_DOMAIN,
         path: "/",
         sameSite: true,
         secure: true,
@@ -281,7 +281,7 @@ app.post("/:language/forgot-password", (req, res) => {
     .catch(() => {
       let messages = [res.locals.__("Reset Password Email Failed")];
       res.cookie("m", JSON.stringify(messages), {
-        domain: DOMAIN,
+        domain: COOKIE_DOMAIN,
         path: "/",
         sameSite: true,
         secure: true,
@@ -302,7 +302,7 @@ app.get("/:language/reset-password", (req, res, next) => {
 app.post("/:language/reset-password", (req, res) => {
   axios
     .post(
-      `${BASE_URL}/auth/reset-password`,
+      `${API_BASE_URL}/auth/reset-password`,
       {
         code: req.body.token,
         password: req.body.password,
@@ -317,7 +317,7 @@ app.post("/:language/reset-password", (req, res) => {
     .then(() => {
       let messages = [res.locals.__("Your password has been reset")];
       res.cookie("m", JSON.stringify(messages), {
-        domain: DOMAIN,
+        domain: COOKIE_DOMAIN,
         path: "/",
         sameSite: true,
         secure: true,
@@ -327,7 +327,7 @@ app.post("/:language/reset-password", (req, res) => {
     .catch(() => {
       let messages = [res.locals.__("Password reset failed")];
       res.cookie("m", JSON.stringify(messages), {
-        domain: DOMAIN,
+        domain: COOKIE_DOMAIN,
         path: "/",
         sameSite: true,
         secure: true,
@@ -341,12 +341,12 @@ app.post("/:language/reset-password", (req, res) => {
 app.get("/:language/sign-out", (_, res) => {
   let messages = [res.locals.__("Sign Out successful")];
   res.cookie("m", JSON.stringify(messages), {
-    domain: DOMAIN,
+    domain: COOKIE_DOMAIN,
     path: "/",
     sameSite: true,
     secure: true,
   });
-  res.clearCookie("t", { domain: DOMAIN, path: "/" });
+  res.clearCookie("t", { domain: COOKIE_DOMAIN, path: "/" });
   res.redirect(`/${res.locals.language}`);
 });
 
@@ -361,7 +361,7 @@ app.get("/:language/sign-up", (_, res) => {
 app.post("/:language/sign-up", (req, res) => {
   axios
     .post(
-      `${BASE_URL}/auth/local/register`,
+      `${API_BASE_URL}/auth/local/register`,
       {
         email: req.body.email,
         password: req.body.password,
@@ -376,25 +376,25 @@ app.post("/:language/sign-up", (req, res) => {
     .then(() => {
       let messages = [res.locals.__("Please validate your email")];
       res.cookie("m", JSON.stringify(messages), {
-        domain: DOMAIN,
+        domain: COOKIE_DOMAIN,
         path: "/",
         httpOnly: true,
         sameSite: "lax",
         secure: true,
       });
-      res.clearCookie("t", { domain: DOMAIN, path: "/" });
+      res.clearCookie("t", { domain: COOKIE_DOMAIN, path: "/" });
       res.redirect(`/${res.locals.language}`);
     })
     .catch(() => {
       let messages = [res.locals.__("Registration Failed")];
       res.cookie("m", JSON.stringify(messages), {
-        domain: DOMAIN,
+        domain: COOKIE_DOMAIN,
         path: "/",
         httpOnly: true,
         sameSite: "lax",
         secure: true,
       });
-      res.clearCookie("t", { domain: DOMAIN, path: "/" });
+      res.clearCookie("t", { domain: COOKIE_DOMAIN, path: "/" });
       res.redirect(`/${res.locals.language}/sign-up`);
     });
 });

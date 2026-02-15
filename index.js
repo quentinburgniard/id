@@ -4,7 +4,6 @@ import express from "express";
 import fr from "./fr.js";
 import morgan from "morgan";
 import pt from "./pt.js";
-import helmet from "helmet";
 
 const app = express();
 const port = process.env.PORT ?? 80;
@@ -16,7 +15,6 @@ app.set("view cache", false);
 app.set("view engine", "pug");
 app.set("trust proxy", 1);
 app.use(cookieParser());
-//app.use(helmet());
 app.use(express.urlencoded({ extended: true }));
 app.use(
   express.static("public", { index: false, lastModified: false, maxAge: "7d" }),
@@ -205,7 +203,6 @@ app.get("/:language/files", (_, res) => {
         },
       })
       .then((response) => {
-        console.log(response.data.data);
         res.render("files", {
           files: response.data.data,
         });
@@ -236,8 +233,7 @@ app.post("/:language/files", (req, res) => {
         });
         res.redirect(`/${res.locals.language}/files`);
       })
-      .catch((err) => {
-        console.log(err);
+      .catch(() => {
         let messages = [res.locals.__("File upload failed")];
         res.cookie("m", JSON.stringify(messages), {
           domain: COOKIE_DOMAIN,
@@ -405,7 +401,6 @@ app.use((_, res) => {
 });
 
 app.use((_, __, res, ___) => {
-  console.log(_, __, ___);
   res.status(500);
   res.send();
 });

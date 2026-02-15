@@ -10,6 +10,31 @@ const port = process.env.PORT ?? 80;
 const COOKIE_DOMAIN = process.env.COOKIE_DOMAIN;
 const API_BASE_URL = process.env.API_BASE_URL;
 
+function setMessages(res, messages) {
+  res.cookie("m", JSON.stringify(messages), {
+    domain: COOKIE_DOMAIN,
+    path: "/",
+    httpOnly: true,
+    sameSite: "strict",
+    secure: true,
+  });
+}
+
+function clearToken(res) {
+  res.clearCookie("t", { domain: COOKIE_DOMAIN, path: "/" });
+}
+
+function setToken(res) {
+  res.cookie("t", res.locals.token, {
+    domain: COOKIE_DOMAIN,
+    maxAge: 604200000,
+    path: "/",
+    httpOnly: true,
+    sameSite: "none",
+    secure: true,
+  });
+}
+
 app.disable("x-powered-by");
 app.set("view cache", false);
 app.set("view engine", "pug");
@@ -76,7 +101,7 @@ app.get("/:language", (req, res) => {
         }
       })
       .catch(() => {
-        res.clearCookie("t", { domain: COOKIE_DOMAIN, path: "/" });
+        clearToken(res);
         res.render("sign-in");
       });
   }
@@ -99,38 +124,17 @@ app.post("/:language", (req, res) => {
     .then((response) => {
       res.locals.email = response.data.user.email;
       res.locals.token = response.data.jwt;
-      res.cookie("t", res.locals.token, {
-        domain: COOKIE_DOMAIN,
-        maxAge: 604200000,
-        path: "/",
-        httpOnly: true,
-        sameSite: "lax",
-        secure: true,
-      });
+      setToken(res);
       if (res.locals.redirect) {
         res.redirect(`/${res.locals.language}?r`);
       } else {
-        let messages = [res.locals.__("Login Successful")];
-        res.cookie("m", JSON.stringify(messages), {
-          domain: COOKIE_DOMAIN,
-          path: "/",
-          httpOnly: true,
-          sameSite: "strict",
-          secure: true,
-        });
+        setMessages(res, [res.locals.__("Login Successful")]);
         res.redirect(`/${res.locals.language}`);
       }
     })
     .catch(() => {
-      let messages = [res.locals.__("Login Failed")];
-      res.cookie("m", JSON.stringify(messages), {
-        domain: COOKIE_DOMAIN,
-        path: "/",
-        httpOnly: true,
-        sameSite: "strict",
-        secure: true,
-      });
-      res.clearCookie("t", { domain: COOKIE_DOMAIN, path: "/" });
+      setMessages(res, [res.locals.__("Login Failed")]);
+      clearToken(res);
       res.redirect(`/${res.locals.language}`);
     });
 });
@@ -161,33 +165,12 @@ app.post("/:language/change-password", (req, res) => {
     )
     .then((response) => {
       res.locals.token = response.data.jwt;
-      let messages = [res.locals.__("Password Changed")];
-      res.cookie("m", JSON.stringify(messages), {
-        domain: COOKIE_DOMAIN,
-        path: "/",
-        httpOnly: true,
-        sameSite: "strict",
-        secure: true,
-      });
-      res.cookie("t", res.locals.token, {
-        domain: COOKIE_DOMAIN,
-        maxAge: 604200000,
-        path: "/",
-        httpOnly: true,
-        sameSite: "lax",
-        secure: true,
-      });
+      setMessages(res, [res.locals.__("Password Changed")]);
+      setToken(res);
       res.redirect(`/${res.locals.language}`);
     })
     .catch(() => {
-      let messages = [res.locals.__("Password Change Failed")];
-      res.cookie("m", JSON.stringify(messages), {
-        domain: COOKIE_DOMAIN,
-        path: "/",
-        httpOnly: true,
-        sameSite: "strict",
-        secure: true,
-      });
+      setMessages(res, [res.locals.__("Password Change Failed")]);
       res.redirect(`/${res.locals.language}/change-password`);
     });
 });
@@ -223,25 +206,11 @@ app.post("/:language/files", (req, res) => {
         },
       })
       .then(() => {
-        let messages = [res.locals.__("File uploaded")];
-        res.cookie("m", JSON.stringify(messages), {
-          domain: COOKIE_DOMAIN,
-          path: "/",
-          httpOnly: true,
-          sameSite: "strict",
-          secure: true,
-        });
+        setMessages(res, [res.locals.__("File uploaded")]);
         res.redirect(`/${res.locals.language}/files`);
       })
       .catch(() => {
-        let messages = [res.locals.__("File upload failed")];
-        res.cookie("m", JSON.stringify(messages), {
-          domain: COOKIE_DOMAIN,
-          path: "/",
-          httpOnly: true,
-          sameSite: "strict",
-          secure: true,
-        });
+        setMessages(res, [res.locals.__("File upload failed")]);
         res.redirect(`/${res.locals.language}/files`);
       });
   }
@@ -265,23 +234,11 @@ app.post("/:language/forgot-password", (req, res) => {
       },
     )
     .then(() => {
-      let messages = [res.locals.__("Reset Password Email Sent")];
-      res.cookie("m", JSON.stringify(messages), {
-        domain: COOKIE_DOMAIN,
-        path: "/",
-        sameSite: true,
-        secure: true,
-      });
+      setMessages(res, [res.locals.__("Reset Password Email Sent")]);
       res.redirect(`/${res.locals.language}`);
     })
     .catch(() => {
-      let messages = [res.locals.__("Reset Password Email Failed")];
-      res.cookie("m", JSON.stringify(messages), {
-        domain: COOKIE_DOMAIN,
-        path: "/",
-        sameSite: true,
-        secure: true,
-      });
+      setMessages(res, [res.locals.__("Reset Password Email Failed")]);
       res.redirect(`/${res.locals.language}/forgot-password`);
     });
 });
@@ -311,23 +268,11 @@ app.post("/:language/reset-password", (req, res) => {
       },
     )
     .then(() => {
-      let messages = [res.locals.__("Your password has been reset")];
-      res.cookie("m", JSON.stringify(messages), {
-        domain: COOKIE_DOMAIN,
-        path: "/",
-        sameSite: true,
-        secure: true,
-      });
+      setMessages(res, [res.locals.__("Your password has been reset")]);
       res.redirect(`/${res.locals.language}`);
     })
     .catch(() => {
-      let messages = [res.locals.__("Password reset failed")];
-      res.cookie("m", JSON.stringify(messages), {
-        domain: COOKIE_DOMAIN,
-        path: "/",
-        sameSite: true,
-        secure: true,
-      });
+      setMessages(res, [res.locals.__("Password reset failed")]);
       res.redirect(
         `/${res.locals.language}/reset-password?t=${req.body.token}`,
       );
@@ -335,14 +280,8 @@ app.post("/:language/reset-password", (req, res) => {
 });
 
 app.get("/:language/sign-out", (_, res) => {
-  let messages = [res.locals.__("Sign Out successful")];
-  res.cookie("m", JSON.stringify(messages), {
-    domain: COOKIE_DOMAIN,
-    path: "/",
-    sameSite: true,
-    secure: true,
-  });
-  res.clearCookie("t", { domain: COOKIE_DOMAIN, path: "/" });
+  setMessages(res, [res.locals.__("Sign Out successful")]);
+  clearToken(res);
   res.redirect(`/${res.locals.language}`);
 });
 
@@ -370,27 +309,13 @@ app.post("/:language/sign-up", (req, res) => {
       },
     )
     .then(() => {
-      let messages = [res.locals.__("Please validate your email")];
-      res.cookie("m", JSON.stringify(messages), {
-        domain: COOKIE_DOMAIN,
-        path: "/",
-        httpOnly: true,
-        sameSite: "lax",
-        secure: true,
-      });
-      res.clearCookie("t", { domain: COOKIE_DOMAIN, path: "/" });
+      setMessages(res, [res.locals.__("Please validate your email")]);
+      clearToken(res);
       res.redirect(`/${res.locals.language}`);
     })
     .catch(() => {
-      let messages = [res.locals.__("Registration Failed")];
-      res.cookie("m", JSON.stringify(messages), {
-        domain: COOKIE_DOMAIN,
-        path: "/",
-        httpOnly: true,
-        sameSite: "lax",
-        secure: true,
-      });
-      res.clearCookie("t", { domain: COOKIE_DOMAIN, path: "/" });
+      setMessages(res, [res.locals.__("Registration Failed")]);
+      clearToken(res);
       res.redirect(`/${res.locals.language}/sign-up`);
     });
 });

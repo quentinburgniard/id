@@ -1,10 +1,9 @@
 .dockerignore
 .DS_Store
 .git
+.github/
 .gitignore
-.vscode
 Dockerfile
 email.html
 LICENSE
-node_modules
 README.md

@@ -180,7 +180,7 @@ app.get("/:language/files", (_, res) => {
     res.redirect(`/${res.locals.language}`);
   } else {
     axios
-      .get(`${API_BASE_URL}/files`, {
+      .get(`${API_BASE_URL}/private-files`, {
         headers: {
           authorization: `Bearer ${res.locals.token}`,
         },

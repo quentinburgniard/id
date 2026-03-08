@@ -198,7 +198,7 @@ app.post("/:language/files", (req, res) => {
     res.redirect(`/${res.locals.language}`);
   } else {
     axios
-      .post(`${API_BASE_URL}/files`, req, {
+      .post(`${API_BASE_URL}/private-files`, req, {
         headers: {
           authorization: `Bearer ${res.locals.token}`,
           "content-type": req.headers["content-type"],

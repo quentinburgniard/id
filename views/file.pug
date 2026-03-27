@@ -1,0 +1,72 @@
+extends layout.pug
+
+block content
+  div(class="row")
+    div(class="col-12 mb-3")
+      div(class="ds-info")
+        div(class="_ds-info label")= __('Name')
+        div(class="_ds-info text")= file.name
+    div(class="col-12 mb-3")
+      div(class="ds-info")
+        div(class="_ds-info label")= __('Extension')
+        div(class="_ds-info text")= file.extension
+    div(class="col-12")
+      div(class="ds-info")
+        div(class="_ds-info text")
+          if file.public
+            .
+              #[i(class="bi bi-globe")] #{__('Public')}
+          else
+            .
+              #[i(class="bi bi-lock-fill")] #{__('Private')}
+    div(class="col-12")
+      a(alt=file.name class="ds-link" href=file.url target="_blank")
+        div(class="_ds-link caption-icon")
+          if /(jpeg|png|webp)$/.test(file.extension)
+            i(class="bi bi-file-earmark-image")
+          else if /(pdf)$/.test(file.extension)
+            i(class="bi bi-file-earmark-pdf")
+          else
+            i(class="bi bi-file-earmark")
+        div(class="_ds-link body")
+          div(class="_ds-link title")= __('Open file')
+        div(class="_ds-link action-icon")
+          i(class="bi bi-arrow-up-right")
+    div(class="col-6")
+      button(class="ds-link-small" id="toggle-public" type="button")
+        div(class="_ds-link body")
+          if file.public
+            div(class="_ds-link-small title")= __('Make it private')
+          else
+            div(class="_ds-link-small title")= __('Make it public')
+    div(class="col-6")
+      button(class="ds-link-small" id="delete" type="button")
+        div(class="_ds-link body")
+          div(class="_ds-link-small title")= __('Delete file')
+  script.
+    (() => {
+      const togglePublicButton = document.getElementById("toggle-public");
+      const deleteButton = document.getElementById("delete");
+      togglePublicButton?.addEventListener("click", () => fetch(`!{apiBaseUrl}/private-files/!{file.documentId}`, {
+        method: "PUT",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({
+          data: {
+            public: !{JSON.stringify(!file.public)},
+          },
+        })
+      }).then(response => {
+        if (response.ok) {
+          window.location.href = !{JSON.stringify(`/${language}/files/${file.documentId}`)};
+        }
+      }));
+      deleteButton?.addEventListener("click", () => fetch(`!{apiBaseUrl}/private-files/!{file.documentId}`, {
+        method: "DELETE",
+      }).then(response => {
+        if (response.ok) {
+          window.location.href = !{JSON.stringify(`/${language}/files`)};
+        }
+      }));
+    })();

@@ -49,6 +49,7 @@ app.use(morgan(":method :url :status"));
 app.use((req, res, next) => {
   res.locals.redirect = req.query.r !== undefined;
   res.locals.token = req.cookies.t ?? undefined;
+  res.locals.apiBaseUrl = API_BASE_URL;
   res.locals.messages = req.cookies.m ? JSON.parse(req.cookies.m) : [];
   res.clearCookie("m", { domain: COOKIE_DOMAIN, path: "/" });
   next();
@@ -173,6 +174,27 @@ app.post("/:language/change-password", (req, res) => {
       setMessages(res, [res.locals.__("Password Change Failed")]);
       res.redirect(`/${res.locals.language}/change-password`);
     });
+});
+
+app.get("/:language/files/:id", (req, res) => {
+  if (!res.locals.token) {
+    res.redirect(`/${res.locals.language}`);
+  } else {
+    axios
+      .get(`${API_BASE_URL}/private-files/${req.params.id}`, {
+        headers: {
+          authorization: `Bearer ${res.locals.token}`,
+        },
+      })
+      .then((response) => {
+        res.render("file", {
+          file: response.data.data,
+        });
+      })
+      .catch(() => {
+        res.redirect(`/${res.locals.language}/files`);
+      });
+  }
 });
 
 app.get("/:language/files", (_, res) => {
@@ -326,6 +348,7 @@ app.use((_, res) => {
 });
 
 app.use((_, __, res, ___) => {
+  console.log(_);
   res.status(500);
   res.send();
 });

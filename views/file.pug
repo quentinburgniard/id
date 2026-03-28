@@ -49,6 +49,7 @@ block content
       const deleteButton = document.getElementById("delete");
       togglePublicButton?.addEventListener("click", () => fetch(`!{apiBaseUrl}/private-files/!{file.documentId}`, {
         method: "PUT",
+        credentials: "include",
         headers: {
           "content-type": "application/json",
         },
@@ -64,6 +65,7 @@ block content
       }));
       deleteButton?.addEventListener("click", () => fetch(`!{apiBaseUrl}/private-files/!{file.documentId}`, {
         method: "DELETE",
+        credentials: "include",
       }).then(response => {
         if (response.ok) {
           window.location.href = !{JSON.stringify(`/${language}/files`)};

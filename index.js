@@ -1,6 +1,7 @@
 import axios from "axios";
 import cookieParser from "cookie-parser";
 import express from "express";
+import { filesize } from "filesize";
 import fr from "./fr.js";
 import morgan from "morgan";
 import pt from "./pt.js";
@@ -189,10 +190,10 @@ app.get("/:language/files/:id", (req, res) => {
       .then((response) => {
         res.render("file", {
           file: response.data.data,
+          formattedSize: filesize(response.data.data.size, {
+            locale: res.locals.language,
+          }),
         });
-      })
-      .catch(() => {
-        res.redirect(`/${res.locals.language}/files`);
       });
   }
 });

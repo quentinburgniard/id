@@ -10,7 +10,11 @@ block content
       div(class="ds-info")
         div(class="_ds-info label")= __('Extension')
         div(class="_ds-info text")= file.extension
-    div(class="col-12")
+    div(class="col-12 mb-3")
+      div(class="ds-info")
+        div(class="_ds-info label")= __('Size')
+        div(class="_ds-info text")= formattedSize
+    div(class="col-12 ")
       div(class="ds-info")
         div(class="_ds-info text")
           if file.public
@@ -32,6 +36,11 @@ block content
           div(class="_ds-link title")= __('Open file')
         div(class="_ds-link action-icon")
           i(class="bi bi-arrow-up-right")
+    input(hidden id="update-input" name="files" type="file")
+    div(class="col-6")
+      button(class="ds-link-small" id="updateButton" type="button")
+        div(class="_ds-link body")
+          div(class="_ds-link-small title")= __('Update content')
     div(class="col-6")
       button(class="ds-link-small" id="toggle-public" type="button")
         div(class="_ds-link body")
@@ -45,8 +54,26 @@ block content
           div(class="_ds-link-small title")= __('Delete file')
   script.
     (() => {
+      const updateInput = document.getElementById("update-input");
+      const updateButton = document.getElementById("updateButton");
       const togglePublicButton = document.getElementById("toggle-public");
       const deleteButton = document.getElementById("delete");
+      updateButton?.addEventListener("click", () => updateInput?.click());
+      updateInput?.addEventListener("change", () => {
+        if (updateInput.files && updateInput.files.length > 0) {
+          const formData = new FormData();
+          formData.append("files", updateInput.files[0]);
+          fetch(`!{apiBaseUrl}/private-files/!{file.documentId}.!{file.extension}`, {
+            method: "PUT",
+            credentials: "include",
+            body: formData,
+          }).then(response => {
+            if (response.ok) {
+              window.location.href = !{JSON.stringify(`/${language}/files/${file.documentId}`)};
+            }
+          });
+        }
+      });
       togglePublicButton?.addEventListener("click", () => fetch(`!{apiBaseUrl}/private-files/!{file.documentId}`, {
         method: "PUT",
         credentials: "include",

@@ -66,7 +66,6 @@ block content
           fetch(`!{apiBaseUrl}/private-files/!{file.documentId}.!{file.extension}`, {
             method: "PUT",
             credentials: "include",
-            mode: "cors",
             body: formData,
           }).then(response => {
             if (response.ok) {
@@ -78,7 +77,6 @@ block content
       togglePublicButton?.addEventListener("click", () => fetch(`!{apiBaseUrl}/private-files/!{file.documentId}`, {
         method: "PUT",
         credentials: "include",
-        mode: "cors",
         headers: {
           "content-type": "application/json",
         },
@@ -95,7 +93,6 @@ block content
       deleteButton?.addEventListener("click", () => fetch(`!{apiBaseUrl}/private-files/!{file.documentId}`, {
         method: "DELETE",
         credentials: "include",
-        mode: "cors",
       }).then(response => {
         if (response.ok) {
           window.location.href = !{JSON.stringify(`/${language}/files`)};
